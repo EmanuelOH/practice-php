@@ -37,14 +37,12 @@ return [
 
     'google' => [
         //Id suministrado por google        
-        'client_id'=> env('GOOGLE_ID'), 
+        'client_id'=> env('GOOGLE_CLIENT_ID'), 
         
         //Secret suministrado por google 
-        'client_secret'=> env('GOOGLE_SECRET'),
+        'client_secret'=> env('GOOGLE_CLIENT_SECRET'),
 
         //Página a la que sera redireccionado el navegador cuando el login se exitoso 
-        //Ejemplo: http://midominio.com/social/handle/google
-        'redirect'=> env('GOOGLE_REDIRECT')
-    ]   
-
+        'redirect'=> env('GOOGLE_REDIRECT_URL')
+    ]
 ];
