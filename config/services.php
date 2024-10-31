@@ -44,5 +44,9 @@ return [
 
         //Página a la que sera redireccionado el navegador cuando el login se exitoso 
         'redirect'=> env('GOOGLE_REDIRECT_URL')
-    ]
+    ],
+
+    'discord' => [
+        'webhook_url' => env('DISCORD_WEBHOOK_URL'),
+    ],
 ];

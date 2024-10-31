@@ -8,10 +8,24 @@ use PHPUnit\Exception;
 
 use App\Http\Requests\CreateUserRequest;
 use App\Http\Requests\UpdateUserRequest;
+use App\Service\DiscordWebhookService;
 
+use App\Events\UserCreated;
+use App\Events\UserUpdated;
+use App\Events\UserDeleted;
+use App\Events\UserRestore;
 
 class UserController extends Controller
 {
+
+    // Método constructor que se llama automáticamente al crear una nueva instancia de la clase
+    public function __construct(DiscordWebhookService $discordWebhookService)
+    {
+        // Almacena la instancia de DiscordWebhookService en la propiedad de la clase
+        $this->discordWebhook = $discordWebhookService;
+    }
+
+
     /**
      * Display a listing of the resource.
      */
@@ -45,7 +59,9 @@ class UserController extends Controller
     {
         $validatedData = $request->validated();
 
-        User::create($validatedData);
+        $user = User::create($validatedData);
+
+        event(new UserCreated($user));
 
         return redirect()->route('usuarios.index')->with('success', 'Usuario creado correctamente.');
     }
@@ -70,6 +86,7 @@ class UserController extends Controller
     {
         try {
             $user = User::find($id);
+        
             return view('users.save', compact('user'));
         } catch (\Exception $e) {
             // si ocurre un error, enviar mensaje a Discord o Slack
@@ -84,7 +101,11 @@ class UserController extends Controller
 
         $validatedData = $request->validated();
 
-        User::find($id)->update($validatedData);
+        $user = User::find($id);
+        
+        $user->update($validatedData);
+
+        event(new UserUpdated($user));
 
         return redirect()->route('usuarios.index')->with('success', 'Usuario actualizado correctamente.');
     }
@@ -96,7 +117,11 @@ class UserController extends Controller
     public function destroy(string $id)
     {
         try {
-            $user = User::find($id)->delete();
+            $user = User::find($id);
+            $user->delete();
+            
+            event(new UserDeleted($user));
+
             return back()->with('success','Se ha eliminado correctamente');
 
         } catch (\Exception $e) {
@@ -123,6 +148,9 @@ class UserController extends Controller
 
         if ($user && $user->trashed()) {
             $user->restore();
+            
+            event(new UserRestore($user));
+
             return redirect()->route('usuarios.index')->with('success', 'Usuario restaurado correctamente.');
         }
 

@@ -9,6 +9,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
+use App\Events\UserCreated;
+
 class LoginController extends Controller
 {
     /**
@@ -42,6 +44,7 @@ class LoginController extends Controller
             } else {
                 // Si no existe, crear un nuevo usuario
                 $user = $this->createUser($googleUser);
+                event(new UserCreated($user));
             }
 
             // Redirigir a la vista de usuarios con un mensaje de éxito

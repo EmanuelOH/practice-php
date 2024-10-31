@@ -26,7 +26,7 @@
 
                     
                     <div class="mb-4 d-flex justify-content-between">
-                        <h3 class="card-title">Lista de Usuarios</h3>
+                        <h1 class="card-title text-2xl">Lista de Usuarios</h1>
                         <a href="{{ route('usuarios.create') }}" class="btn btn-primary btn-lg">
                             <i class="bi bi-plus-circle"></i> Crear Usuario
                         </a>
